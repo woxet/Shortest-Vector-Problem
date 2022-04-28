@@ -36,13 +36,50 @@ def reduce_base(B):
 	print("Is reduced ?",LLL.is_reduced(L))
 	return L
 
+# Depth-first search of the lattice [-5;+5]
+# In : B a reduced basis
+# Out : vMin a list of vectors with a minimal norm
+def depth_first_search(B):
+	vMin = []
+	vMax = IntegerMatrix(1,n)
+	# Choose randomly a vector in the base and define it as the largest
+	r = random.randint(0,n-1)
+	print("Random :", r)
+	vMax = np.copy(B[r])
+	print("vMax =", vMax)
+	#print(vMax[0].norm()**2)
+
+	# Randomly create a vector in the lattice
+	alea = IntegerMatrix(1, n)
+	for k in range(3):
+		r = random.randint(0,n-1)
+		alea[0].addmul(B[k])
+	print("alea =", alea)
+	#print(type(alea))
+
+	neighborList = neighbor(B, alea) # We build the neighbors 
+	print(type(neighborList[0]))
+
+	return vMin
+
+def neighbor(B, v):
+	nList = [] # List that contains the neighbors of the vector in parameter
+	for i in range(n):
+		for k in range(-5,5):
+			neigh = v[0]
+			#neigh = np.copy(v) # A neighbor 
+			neigh.addmul(B[i],k)
+			nList.append(neigh)
+	return nList
+
 #######################################
 ##############  CODE  #################
 #######################################
 
-n = 2
+n = 10
 B = init_matrix(n)
 L = reduce_base(B)
+vMin = depth_first_search(L)
 
 #S = SVP.shortest_vector(L)
 #print(S)

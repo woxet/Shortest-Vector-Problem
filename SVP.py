@@ -9,14 +9,14 @@ Created on Mon Apr 25 2022
 from fpylll import IntegerMatrix, LLL, GSO, SVP, FPLLL
 import numpy as np
 import random
-import time
+from time import time
 
 import csv,math
 from pathlib import Path
 
 global n # Lattice length
-FPLLL.set_random_seed(48623)
-random.seed(53265)
+FPLLL.set_random_seed(time())
+random.seed(time())
 
 # Initiation of the matrix
 # In : n the lattice length
@@ -46,8 +46,10 @@ def depth_first_search(B):
 	vMin = []
 	borne = 0
 	for k in range(n): # Search for the largest vector of the basis
-		if borne < B[k].norm(): 
+		if borne < B[k].norm():
 			borne = B[k].norm()
+		#borne += B[k].norm() 
+	#borne = borne/n
 	
 	neigh = []
 	v = IntegerMatrix(1, n)
@@ -60,7 +62,8 @@ def depth_first_search(B):
 		x[r] += 1
 		v[0].addmul(B[r])
 
-	neigh, vMin = neighbor(B, x, v, neigh, borne)
+	neigh.append(v[0])
+	vMin = neighbor(B, x, v, neigh, vMin, borne)
 	print("vMin len =", len(vMin))
 	return vMin # We build the neighbors 
 
@@ -68,33 +71,19 @@ def isIn(x,List):
 	for i in range(len(List)):
 		elem = List[i]
 		if np.array_equal(x[0], elem):
+			#print("x:",x, "\n", "elem:", elem,"\n\n")
 			return True
-		"""
-		for j in range(n):
-			if j == n-1 and x[0,j] == elem[j]:
-				#print("x:",x, "\n", "elem:", elem,"\n\n")
-				return True 
-			if x[0,j] != elem[j]:
-				break
-		"""
 	return False
 
 # Generate neighbors of the vector
 # In : B a reduced basis
 # Out: neigh a list of candidates neighbors with a minimal norm | vMin a list of good vectors
-def neighbor(B, x, v, neighPrev, borne):
-	vMin = []
-	vMin2 = []
-	neigh = list(neighPrev)
-	neigh2 = []
-
-	neigh.append(v[0])
-
+def neighbor(B, x, v, neighPrev, vMin, borne):
 	for i in range(n):
-		if x[i] < -3 or x[i] > 3:
+		if x[i] < -5 or x[i] > 5:
 			#print(x)
-			return neigh2, vMin2
-		x2 = list(x)
+			return vMin
+		x2 = x.copy()
 		w = IntegerMatrix(1, n)
 		#print(np.dot(v[0],B[i]))
 		if np.dot(v[0],B[i]) > 0:
@@ -107,62 +96,42 @@ def neighbor(B, x, v, neighPrev, borne):
 			w[0].addmul(B[i])
 			x2[i] += 1
 		
-		if w[0].norm() != 0 and not isIn(w,neigh):
+		if w[0].norm() != 0 and not isIn(w,neighPrev):
 			if w[0].norm() <= v[0].norm():
 				#print(w[0])
-				neigh.append(w[0])
+				neighPrev.append(w[0])
+				if len(neighPrev) > 100000:
+					neighPrev.pop(0)
 				if w[0].norm() <= borne:
 					print(w[0])
 					vMin.append(w[0])
 				#print("on descend\n\n")
-				neigh2, vMin2 = neighbor(B, x2, w, neigh, borne)
-		#print(x)
-	#print(len(neigh))
+				vMin = neighbor(B, x2, w, neighPrev, vMin, borne)
 
-	return neigh+neigh2, vMin+vMin2
-
-#####################################
-############### STATS ###############
-#####################################
-
-def stats(somme,essais):
-	moy = somme/essais
-	var = (1/essais)*(somme**2)-(moy**2)
-	ec = math.sqrt(var)
-	print(moy)
-	print(ec)
-	with open('stats.csv','a') as fichier:
-		writer = csv.writer(fichier)
-		elem = [moy,ec]
-		writer.writerow(elem)
+	return vMin
 
 ####################################
 ############### CODE ###############
 ####################################
 
-n = 15
+n = 40
 essais = 1
 somme = 0
+vMin = []
+B = init_matrix(n)
+L = reduce_base(B)
+#print(L)
 
-"""
-fileName = r"stats.csv"
-fileObj = Path(fileName)
-if not fileObj.is_file():
-	with open('stats.csv','w') as fichier:
-		writer = csv.writer(fichier)
-		elem = ['Moyenne','Ecart-Type']
-		writer.writerow(elem)
-"""
-for x in range(essais):
-	B = init_matrix(n)
-	L = reduce_base(B)
-	vMin = depth_first_search(L)
-	#somme += len(vMin)
+vMin = depth_first_search(L)
 
 print("vMin len =", len(vMin))
-for i in range(len(vMin)):
-	print(vMin[i],end="\n\n")
-#stats(somme,essais)
+
+sv = vMin[0]
+for k in range(1,len(vMin)):
+	if sv.norm() > vMin[k].norm():
+		sv = vMin[k]
+
+print("sv :", sv)
 
 S = SVP.shortest_vector(L)
 print(S)

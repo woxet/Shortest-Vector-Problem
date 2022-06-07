@@ -17,72 +17,62 @@ FPLLL.set_random_seed(time())
 ###########################################
 ############## PERMUTATION ################
 ###########################################
+# Swap 2 rows of a matrix
+# In : M a matrix, i and j the indexes of the lines to swap
+# Out : None
 def swap_rows(M,i,j):
-	for l in range(n):
-		tmp = M[i,l]
-		M[i,l] = M[j,l]
-		M[j,l] = tmp
-
-def swap_columns(M,i,j):
-	for l in range(k):
-		tmp = M[l,i]
-		M[l,i] = M[l,j]
-		M[l,j] = tmp
-
-def add_to_row(M,p,d):
-	a = int(M[p,p]/d)
-	b = int(M[p+1,p+1]/d)
-	for x in range(p+1,n):
-		print(M[p+1,x])
-		M[p+1,x] = a*M[p+1,x]-b*M[p,x]
-		print(M[p+1,x],"\n")
-
-def add_to_column(M,p,d):
-	a = int(M[p,p]/d)
-	b = int(M[p+1,p]/d)
-	for x in range(p+1,k):
-		M[x,p] = a*M[x,p]-b*M[p,p]
-
-def change_sign_row(M,x):
-	for y in range(n):
-		M[x][y] = - M[x][y]
-
-def change_sign_column(M,x):
-	for y in range(k):
-		M[y][x] = - M[y][x]
+	tmp = IntegerMatrix(1,n)
+	for k in range(n):
+		tmp[0,k] = int(M[int(i),k])
+	for k in range(n):
+		M[i,k] = int(M[j,k])
+	for k in range(n):
+		M[j,k] = tmp[0,k]
 
 ###########################################
 ###########################################
 
-def init_matrix(k,n):
-	B = IntegerMatrix(k, n)
-	for i in range(k):
-		l = IntegerMatrix(1,n)
-		for j in range(n):
+# Initiation of the matrix
+# In : n the lattice length
+# Out: B a basis
+def init_matrix(n,m):
+	B = IntegerMatrix(n,m)
+	for i in range(n):
+		l = IntegerMatrix(1,m)
+		for j in range(m):
 			r = random.randint(-5,5)
 			l[0,j] = r
 		B[i].addmul(l[0])
-	#print("Basis\n",B, end="\n\n")
 	return B
 
-# On prend la plus petite entrée de A non-zero
+# Returns the first non-zero pivot
+# In : A a matrix, x an index
+# Out : None
 def pivot(A,x):
-	if A[x,x] == 0:
-		for i in range(n):
-			if A[i,0] != 0:
-				swap_rows(A,x,i)
-				break
+	p = A[x,x]
+	for i in range(x,A.nrows):
+		if A[i,x] != 0:
+			swap_rows(A,x,i)
+			break
 
 def improving_pivot(A):
 	for p in range(n):
 		pivot(A,p)
-		for i in range(p+1,k):
-			d = math.gcd(abs(A[p,p]), abs(A[i,p]))
+		for j in range(p+1,n):
+			d = math.gcd(abs(A[p,p]), abs(A[j,p]))
 			a = int(A[p,p]/d)
-			b = int(A[i,p]/d)
-			A[i,p] = a*A[i,p]-b*A[p,p]
-
+			b = int(A[j,p]/d)
+			for k in range(j,n):
+				A[j,p] = a*A[j,p]-b*A[p,p]
 	print(A,"\n")
+	"""for p in range(n):
+		for i in range(n-1,p,-1):
+			d = math.gcd(abs(A[p,p]), abs(A[p,i]))
+			a = int(A[p,p]/d)
+			b = int(A[p,i]/d)
+			A[p,i] = a*A[p,i]-b*A[p,p]
+
+	print(A,"\n")"""
 
 global k,n
 k = 15
@@ -92,3 +82,7 @@ A = init_matrix(k,n)
 print(A,"\n")
 #pivot(A)
 improving_pivot(A)
+d = IntegerMatrix(1,n)
+for x in range(n):
+	d[0,x] = A[x,x]
+print(d)

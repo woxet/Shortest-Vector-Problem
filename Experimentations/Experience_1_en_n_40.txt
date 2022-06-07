@@ -1,0 +1,35 @@
+Création de la base..
+Réduction de la base..
+Base réduite.
+Début du parcours du graphe..
+(-6, 100, 28, -2, -164, -78, 127, -19, 39, -46, -9, -20, 147, 6, 28, 46, 46, 80, -81, -58, 66, -19, 38, 128, 76, 5, 37, 74, -54, 58, 56, -9, -102, 28, 87, -7, 43, 158, -41, -51)
+norme sv BKZ: 449.42963854200804
+
+J'ai trouvé 50 "bon(s)" vecteurs en 648.4276084899902 sec
+
+vMin len = 51
+sv : (-6, 100, 28, -2, -164, -78, 127, -19, 39, -46, -9, -20, 147, 6, 28, 46, 46, 80, -81, -58, 66, -19, 38, 128, 76, 5, 37, 74, -54, 58, 56, -9, -102, 28, 87, -7, 43, 158, -41, -51)
+norme sv: 449.42963854200804
+Création de la matrice m x n..
+Début HNF..
+Fin HNF.
+
+Réducton de la nouvelle base..
+Base réduite.
+Moyenne des normes des vecteurs de la base initiale : 574.3824833494181
+Moyenne des normes des vecteurs de la nouvelle base : 218.76936488676492
+(-6, 100, 28, -2, -164, -78, 127, -19, 39, -46, -9, -20, 147, 6, 28, 46, 46, 80, -81, -58, 66, -19, 38, 128, 76, 5, 37, 74, -54, 58, 56, -9, -102, 28, 87, -7, 43, 158, -41, -51)
+norme sv BKZ: 449.42963854200804
+
+J'ai trouvé 50 "bon(s)" vecteurs en 514.0820579528809 sec
+vMin len = 51
+sv : (-17, 101, 27, -120, 99, -4, -26, 45, 16, 61, 117, -8, 23, -3, -7, -102, -64, -59, 117, 11, 159, 19, 89, -12, -1, 12, -96, -87, 73, -12, 92, -19, -26, -32, -99, -45, -106, -221, -83, -99)
+norme sv: 493.42983290433506
+
+Création de la matrice m x n..
+Début HNF..
+Fin HNF.
+Réducton de la nouvelle base..
+Base réduite.
+Moyenne des normes des vecteurs de la base initiale : 574.3824833494181
+Moyenne des normes des vecteurs de la nouvelle base : 294.457144922376
